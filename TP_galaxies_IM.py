@@ -378,84 +378,70 @@ def main():
     galaxies, coords, emplacements, densites, logMass, meta, age = prepare_galaxies()
     print("galaxies chargées")
 
+    
     """affichage de l'emplacement discrétisé"""
     color = np.array(emplacements)
     color = (color - min(color)) / (max(color) - min(color))
-    #plot_galaxies(galaxies, coords, colors)
-    #affichage_histogramme(emplacements)
-    #print(calcule_entropy(color))
-
+    red = discretisation(color)
     """affichage du type morphologique"""
-    colorr = np.array([])
-
-
-
+    A = np.zeros((4291))
+    B = np.ones((18407))
+    colorr = np.concatenate((A, B))
+    nmi = calcule_NMI(colorr, red)
+    
     """affichage du redshift"""
     colors = np.array([g.point[2] for g in galaxies])
     colors = (colors - min(colors)) / (max(colors) - min(colors))
     colors = abs(1-colors)
-    #affichage_histogramme(colors)
-    #plot_galaxies(galaxies, coords, colors)
-    #1.0000000000000053
-
-
-    print(calcule_information_interaction(color,colorr,colors))
-
-
-
-
+    red = discretisation(colors)
+    """affichage du type morphologique"""
+    A = np.zeros((4291))
+    B = np.ones((18407))
+    colorr = np.concatenate((A, B))
+    nmi = calcule_NMI(colorr, red)
 
 
     """affichage de metallicity"""
     colors = np.array(meta)
     colors = (colors - min(colors)) / (max(colors) - min(colors))
-
-    #0.12060957240342178
-    #affichage_histogramme(meta)
-    #plot_galaxies(galaxies, coords, colors)
-
-    #affichage_histogramme(meta)
-    #red = discretisation(meta)
-    #affichage_histogramme(red,10)
+    red = discretisation(colors)
+    """affichage du type morphologique"""
+    A = np.zeros((4291))
+    B = np.ones((18407))
+    colorr = np.concatenate((A, B))
+    nmi = calcule_NMI(colorr, red)
 
     """affichage des densités"""
     colors = np.array(densites)
     colors = (colors - min(colors)) / (max(colors) - min(colors))
-
-    #0.43423489371986845
-
-    #affichage_histogramme(densites)
-    #plot_galaxies(galaxies, coords, colors)
+    red = discretisation(colors)
+    """affichage du type morphologique"""
+    A = np.zeros((4291))
+    B = np.ones((18407))
+    colorr = np.concatenate((A, B))
+    nmi = calcule_NMI(colorr, red)
 
 
     """affichage logMass"""
     colors = np.array(logMass)
-    # print(colors)
     colors = (colors - min(colors)) / (max(colors) - min(colors))
-    #0.9104195791097794
-    # affichage_histogramme(logMass)
-    # red = discretisation(logMass)
-    # affichage_histogramme(red)
-
-
-
-    #plot_galaxies(galaxies, coords, colors)calcule_information_interaction
-
-    # affichage_histogramme(logMass)
-    # red = discretisation(logMass)
-    # affichage_histogramme(red,10)
-
-
-
-    #plot_galaxies(galaxies, coords, colors)
+    red = discretisation(colors)
+    """affichage du type morphologique"""
+    A = np.zeros((4291))
+    B = np.ones((18407))
+    colorr = np.concatenate((A, B))
+    nmi = calcule_NMI(colorr, red)
 
 
     """affichage de age"""
     colors = np.array(age)
     colors = (colors - min(colors)) / (max(colors) - min(colors))
-    #plot_galaxies(galaxies, coords, colors)
-    #affichage_histogramme(age)
-    #discreatisation(age)
+    red = discretisation(colors)
+    """affichage du type morphologique"""
+    A = np.zeros((4291))
+    B = np.ones((18407))
+    colorr = np.concatenate((A, B))
+    nmi = calcule_NMI(colorr, red)
 
 def discr(liste_valeurs_propriete):
     liste_valeurs_propriete_discretisee = []
@@ -508,14 +494,14 @@ def discretisation_quantiles(liste_valeurs_propriete):
     while (i * N < len(liste_valeurs_propriete)):
         bins.append(liste2_valeurs_propriete[N*i])
         i = i + 1
-    print(bins,len(bins))
+    #print(bins,len(bins))
     liste_valeurs_propriete_discretisee = np.digitize(liste_valeurs_propriete, bins)
     return liste_valeurs_propriete_discretisee
 
 def affichage_histogramme(liste_valeurs_propriete,bins=50):
     #print(min(liste_valeurs_propriete),max(liste_valeurs_propriete))
     hist, edges = np.histogram(liste_valeurs_propriete, bins)
-    print(len(hist),len(liste_valeurs_propriete))
+    #print(len(hist),len(liste_valeurs_propriete))
     width = 0.99 * (edges[1] - edges[0])
     plt.bar(edges[:-1], hist, align='edge', width=width)
     plt.show()
@@ -596,6 +582,7 @@ def calcule_NMI(liste_tirages_varX, liste_tirages_varY):
         h_xy.append((x,y))
     h_xy = np.array(h_xy,dtype="f,f")
     h_XY = calcule_entropy(calcule_distribution_proba(h_xy))#entropie jointe
+    print(h_XY)
 
     IM = h_x + h_y - h_XY
     NMI = (IM * 2) / (h_x + h_y)
